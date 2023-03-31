@@ -3,6 +3,9 @@ pipeline{
         label "worker1"
     }
     stages{
+    // environment {
+    //     AWS=credentials('aws_creds')
+    // }
         stage("Init"){
             steps{
                 withAWS(credentials: 'aws_creds', region: 'us-east-1'){
@@ -25,7 +28,9 @@ pipeline{
         }
         stage("Plan"){
             steps{
+                 withAWS(credentials: 'aws_creds', region: 'us-east-1'){
                 sh 'terraform -chdir=environments/dev plan'
+                }
             }
             post{
                 always{
@@ -48,7 +53,9 @@ pipeline{
         }
         stage("Apply"){
             steps{
+                 withAWS(credentials: 'aws_creds', region: 'us-east-1'){
                 sh 'terraform -chdir=environments/dev apply -auto-approve'
+                }
             }
             post{
                 always{
@@ -64,8 +71,10 @@ pipeline{
         }
          stage("kubeconfig"){
             steps{
+                withAWS(credentials: 'aws_creds', region: 'us-east-1'){
                 sh 'aws eks --region us-east-1 update-kubeconfig --name dev-eks'
                 sh 'kubectl get pods --all-namespaces'
+                }
             }
             post{
                 always{
