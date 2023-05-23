@@ -35,6 +35,11 @@ resource "aws_eks_node_group" "workers" {
   cluster_name  = aws_eks_cluster.cluster.name
   node_role_arn = aws_iam_role.eks_node.arn
   subnet_ids    = var.subnet_ids
+  #####################################
+  remote_access {
+    ec2_ssh_key               = "testing-eks-kp"
+    source_security_group_ids = "sg-073be03e310321dc3"
+  }
 
 
 
